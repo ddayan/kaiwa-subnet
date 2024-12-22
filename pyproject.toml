@@ -30,9 +30,9 @@ dependencies = [
     "supervisor<5.0.0,>=4.2.5",
     "pylint<4.0.0,>=3.1.0",
     "attrs<24.0.0,>=23.2.0",
-    "torch==2.3.0",
-    "xformers==0.0.26.post1",
-    "vllm==0.5.0",
+    "torch==2.4.0",
+    "xformers>=0.0.26.post1",
+    "vllm>=0.5.0",
     "autoawq>=0.2.5",
     "sentence-transformers>=3.0.1",
 ]

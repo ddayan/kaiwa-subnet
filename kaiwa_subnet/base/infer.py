@@ -18,6 +18,14 @@ from vllm.entrypoints.openai.serving_engine import LoRAModulePath
 from kaiwa_subnet.base.config import KaiwaBaseSettings
 
 
+class RequestLogger:
+    def log_inputs(self, *args, **kwargs):
+        pass
+
+    def log_outputs(self, *args, **kwargs):
+        pass
+
+
 class InferenceEngine(Module):
     def __init__(self, settings: KaiwaBaseSettings) -> None:
         super().__init__()
@@ -32,17 +40,19 @@ class InferenceEngine(Module):
         )
         self.engine = AsyncLLMEngine.from_engine_args(engine_args)
         model_config = asyncio.run(self.engine.get_model_config())
-        served_model_names = [engine_args.model]
+        base_model_paths = [LoRAModulePath(name=engine_args.model, path=engine_args.model)]
         response_role = "assistant"
         lora_modules = None
         chat_template = asyncio.run(self.engine.get_tokenizer()).chat_template
         self.openai_serving_chat = OpenAIServingChat(
             self.engine,
             model_config,
-            served_model_names,
+            base_model_paths,
             response_role,
-            lora_modules,
-            chat_template,
+            lora_modules=lora_modules,
+            chat_template=chat_template,
+            prompt_adapters=[],
+            request_logger=RequestLogger(),
         )
 
     @endpoint
